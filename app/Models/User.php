@@ -55,4 +55,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Dish::class);
     }
+
+    public function days(): HasMany
+    {
+        return $this->hasMany(Day::class);
+    }
 }

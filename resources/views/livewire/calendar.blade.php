@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Day;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 
@@ -21,15 +22,23 @@ mount(function () {
 
     $this->weeks =collect($startOfWeek->toPeriod($endOfWeek)->toArray())
             ->map(fn ($date) => [
-                'path' => $date->format('Y-m-d'),
+                'date' => $date->format('Y-m-d'),
                 'day' => $date->day,
                 'withinMonth' => $date->between($startOfMonth, $endOfMonth),
             ])
             ->chunk(7);
 });
 
+$navigateToDay = function (string $date) {
+    $day = Auth::user()->days()->firstOrCreate(['date' => $date]);
+
+    $this->redirect(route("days.show", $day), navigate: true);
+}
+
+// https://tighten.com/insights/building-a-calendar-with-carbon/
 ?>
 
+<div class="bg-white p-4">
 <table class="m-auto text-center">
     <thead>
         <tr>
@@ -43,15 +52,16 @@ mount(function () {
             <tr>
                 @foreach ($days as $day)
                     <td>
-                        <a
-                            href="{{ $day['path'] }}"
-                            @class(['bg-gray-200' => !$day['withinMonth'], "block p-2 hover:bg-gray-300"])
+                        <button
+                            @class(['bg-gray-200' => !$day['withinMonth'], "p-2 hover:bg-gray-300 block w-full"])
+                            wire:click="navigateToDay('{{ $day['date'] }}')"
                         >
                             {{ $day['day'] }}
-                        </a>
+                        </button>
                     </td>
                 @endforeach
             </tr>
         @endforeach
     </tbody>
 </table>
+</div>

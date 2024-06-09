@@ -1,8 +1,6 @@
 <?php
 
-use App\Livewire\Actions\Logout;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 
 use function Livewire\Volt\layout;
 use function Livewire\Volt\state;
@@ -12,16 +10,18 @@ layout('layouts.app');
 $getDishes = fn() => ($this->dishes = Auth::user()->dishes()->get());
 
 state(['dishes' => $getDishes]);
-
 ?>
 
 <div>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+        <div class="flex items-center justify-between">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                Dania
+            </h2>
 
+            <x-primary-button :href="route('dishes.create')" type="link">Dodaj</x-primary-button>
+        </div>
+    </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -42,20 +42,23 @@ state(['dishes' => $getDishes]);
                             @foreach ($dishes as $dish)
                                 <tr class="bg-white border-b">
                                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                        {{ $dish->name }}
+                                        <a href="{{ route('dishes.show', $dish) }}">
+                                            {{ $dish->name }}
+                                        </a>
                                     </th>
                                     <td class="px-6 py-4">
-                                        @foreach ($dish->tags as $tag)
-                                            {{ $tag->name }}
-                                        @endforeach
+                                        <div class="flex gap-2">
+                                            @foreach ($dish->tags as $tag)
+                                                <x-tag-badge :tag="$tag" />
+                                            @endforeach
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
-
-
                 </div>
             </div>
         </div>
     </div>
+</div>

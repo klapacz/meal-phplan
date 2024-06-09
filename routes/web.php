@@ -11,6 +11,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Volt::route('dishes', 'pages.dishes.index')
         ->name('dishes');
+
+    Volt::route('dishes/create', 'pages.dishes.create')
+        ->name('dishes.create');
+
+    Volt::route('dishes/{dish}', 'pages.dishes.show')
+        ->name('dishes.show');
 });
 
 

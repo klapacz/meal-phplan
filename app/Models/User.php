@@ -50,4 +50,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Tag::class);
     }
+
+    public function dishes(): HasMany
+    {
+        return $this->hasMany(Dish::class);
+    }
 }

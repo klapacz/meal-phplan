@@ -12,12 +12,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tags', function (Blueprint $table) {
+        Schema::create('dishes', function (Blueprint $table) {
             $table->id();
-            $table->string("name")->unique();
-            $table->string("color");
-            $table->foreignIdFor(User::class);
             $table->timestamps();
+            $table->string("name")->unique();
+            $table->string("content");
+            $table->foreignIdFor(User::class);
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tags');
+        Schema::dropIfExists('dishes');
     }
 };

@@ -11,4 +11,6 @@
             </div>
         </div>
     </div>
+
+    <livewire:calendar />
 </x-app-layout>

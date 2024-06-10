@@ -25,7 +25,7 @@ $logout = function (Logout $logout) {
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
-                        {{ __('Dashboard') }}
+                        Jadłospis
                     </x-nav-link>
                     <x-nav-link :href="route('dishes')" :active="request()->routeIs('dishes')" wire:navigate>
                         Dania
@@ -79,7 +79,11 @@ $logout = function (Logout $logout) {
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
-                {{ __('Dashboard') }}
+                Jadłospis
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('dishes')" :active="request()->routeIs('dishes')" wire:navigate>
+                Dania
             </x-responsive-nav-link>
         </div>
 

@@ -6,7 +6,6 @@ use Illuminate\Validation\Rule;
 
 use function Livewire\Volt\layout;
 use function Livewire\Volt\mount;
-use function Livewire\Volt\rules;
 use function Livewire\Volt\state;
 
 layout('layouts.app');
@@ -45,6 +44,11 @@ $addDish = function () {
 
     $this->redirect(route('dishes'), navigate: true);
 };
+
+
+$deleteDish = function () {
+    $this->dish->delete();
+}
 
 ?>
 
@@ -109,7 +113,10 @@ $addDish = function () {
                         </div>
 
 
-                        <div class="flex justify-end">
+                        <div class="flex justify-between">
+                            <x-primary-button wire:click="deleteDish">
+                                Usuń
+                            </x-primary-button>
                             <x-primary-button>
                                 Edytuj
                             </x-primary-button>

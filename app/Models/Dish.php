@@ -20,4 +20,8 @@ class Dish extends Model
     public function tags(): BelongsToMany {
         return $this->belongsToMany(Tag::class);
     }
+
+    public function days(): BelongsToMany {
+        return $this->belongsToMany(Day::class);
+    }
 }

@@ -114,9 +114,9 @@ $deleteDish = function () {
 
 
                         <div class="flex justify-between">
-                            <x-primary-button wire:click="deleteDish">
+                            <x-danger-button wire:click="deleteDish">
                                 Usuń
-                            </x-primary-button>
+                            </x-danger-button>
                             <x-primary-button>
                                 Edytuj
                             </x-primary-button>

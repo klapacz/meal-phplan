@@ -11,9 +11,7 @@ use App\Models\Day;
 
 layout('layouts.app');
 
-state(['day']);
-
-state(['editing'])->url();
+state(['day', 'editing']);
 
 mount(function (Day $day) {
     if (!$day->user()->is(Auth::user())) {
@@ -79,7 +77,8 @@ $dishesForTag = computed(function () {
         </div>
     </x-slot>
 
-    <div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true" x-show="$wire.editing">
+    @if($editing)
+    <div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true" wire:transition>
         <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
 
         <div class="fixed inset-0 z-10 w-screen overflow-y-auto" x-trap="$wire.editing" @click.outside="console.log('click')">
@@ -90,9 +89,9 @@ $dishesForTag = computed(function () {
                         <div class="sm:flex sm:items-start">
                             <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                                 <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">Wybierz danie</h3>
-                                <div class="mt-2">
+                                <div class="mt-2 divide-y divide-gray-200">
                                     @foreach ($this->dishesForTag as $dish)
-                                        <div wire:key="dish-{{$dish->id}}" wire:click="setDish({{$dish->id}})">
+                                        <div wire:key="dish-{{$dish->id}}" wire:click="setDish({{$dish->id}})" class="p-4">
                                             {{ $dish->name }}
                                         </div>
                                     @endforeach
@@ -108,6 +107,7 @@ $dishesForTag = computed(function () {
             </div>
         </div>
     </div>
+    @endif
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">

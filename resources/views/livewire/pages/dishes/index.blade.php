@@ -33,6 +33,9 @@ state(['dishes' => $getDishes]);
                                 <th scope="col" class="px-6 py-3">
                                     Nazwa
                                 </th>
+                                <th scope="col" class="px-6 py-3 text-right">
+                                    Kcal
+                                </th>
                                 <th scope="col" class="px-6 py-3">
                                     Tagi
                                 </th>
@@ -41,11 +44,16 @@ state(['dishes' => $getDishes]);
                         <tbody>
                             @foreach ($dishes as $dish)
                                 <tr class="bg-white border-b">
-                                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                                    <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                         <a href="{{ route('dishes.show', $dish) }}">
                                             {{ $dish->name }}
                                         </a>
-                                    </th>
+                                    </td>
+                                    <td class="text-right px-6 py-4">
+                                        @if ($dish->kcal)
+                                            {{ $dish->kcal }}
+                                        @endif
+                                    </td>
                                     <td class="px-6 py-4">
                                         <div class="flex gap-2">
                                             @foreach ($dish->tags as $tag)

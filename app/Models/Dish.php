@@ -11,7 +11,7 @@ class Dish extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'content'];
+    protected $fillable = ['name', 'content', 'kcal'];
 
     public function user(): BelongsTo {
         return $this->belongsTo(User::class);

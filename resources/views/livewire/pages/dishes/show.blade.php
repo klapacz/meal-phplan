@@ -10,7 +10,7 @@ use function Livewire\Volt\state;
 
 layout('layouts.app');
 
-state(['dish', 'name' => '', 'content' => '', 'tags' => [], 'allTags' => []]);
+state(['dish', 'name' => '', 'content' => '', 'kcal' => 0, 'tags' => [], 'allTags' => []]);
 
 mount(function (Dish $dish) {
     if (!$dish->user()->is(Auth::user())) {
@@ -20,6 +20,7 @@ mount(function (Dish $dish) {
     $this->dish = $dish;
     $this->name = $dish->name;
     $this->content = $dish->content;
+    $this->kcal = $dish->kcal;
     $this->tags = $dish->tags->pluck('id');
 
     $this->allTags = Auth::user()->tags()->get();
@@ -29,6 +30,7 @@ $addDish = function () {
     $validated = $this->validate([
         'name' => ['required', 'string', 'max:255', Rule::unique(Dish::class)->ignore($this->dish->id)],
         'content' => ['string'],
+        'kcal' => ['int'],
         'tags' => [
             'array',
             'min:1',
@@ -48,6 +50,7 @@ $addDish = function () {
 
 $deleteDish = function () {
     $this->dish->delete();
+    $this->redirect(route('dishes'), navigate: true);
 }
 
 ?>
@@ -74,6 +77,14 @@ $deleteDish = function () {
                                 required />
 
                             <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                        </div>
+
+                        <div>
+                            <x-input-label for="kcal" value="Kcal" />
+
+                            <x-text-input wire:model="kcal" id="kcal" class="block mt-1 w-full" name="kcal" type="number"/>
+
+                            <x-input-error :messages="$errors->get('kcal')" class="mt-2" />
                         </div>
 
                         <div>
@@ -112,9 +123,8 @@ $deleteDish = function () {
                             <x-input-error :messages="$errors->get('content')" class="mt-2" />
                         </div>
 
-
                         <div class="flex justify-between">
-                            <x-danger-button wire:click="deleteDish">
+                            <x-danger-button wire:click="deleteDish" type="button">
                                 Usuń
                             </x-danger-button>
                             <x-primary-button>

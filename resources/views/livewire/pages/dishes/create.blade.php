@@ -15,6 +15,7 @@ state([
     'name' => '',
     'content' => '',
     'tags' => [],
+    'kcal' => 0,
     'allTags' => [],
 ]);
 
@@ -25,6 +26,7 @@ mount(function () {
 rules([
     'name' => ['required', 'string', 'max:255', Rule::unique(Dish::class)],
     'content' => ['string'],
+    'kcal' => ['int'],
     'tags' => [
         'array',
         'min:1',
@@ -69,6 +71,15 @@ $addDish = function () {
 
                             <x-input-error :messages="$errors->get('name')" class="mt-2" />
                         </div>
+
+                        <div>
+                            <x-input-label for="kcal" value="Kcal" />
+
+                            <x-text-input wire:model="kcal" id="kcal" class="block mt-1 w-full" name="kcal" type="number"/>
+
+                            <x-input-error :messages="$errors->get('kcal')" class="mt-2" />
+                        </div>
+
 
                         <div>
                             <x-input-label value="Tagi" />

@@ -22,7 +22,17 @@ class EditDayDish extends ModalComponent
     #[Computed]
     public function dishes()
     {
-        return Auth::user()->dishes()->whereHas('tags', fn($q) => $q->where('tag_id', $this->tag->id))->get();
+        $current_dish = $this->day
+            ->dishes()
+            ->where('tag_id', $this->tag->id)
+            ->first();
+        $dishes = Auth::user()->dishes()->whereHas('tags', fn($q) => $q->where('tag_id', $this->tag->id))->get();
+
+        return $dishes->map(function ($d) use ($current_dish) {
+            $d->is_selected = $current_dish && $current_dish->id === $d->id;
+
+            return $d;
+        });
     }
 
     public function update(Dish $dish)

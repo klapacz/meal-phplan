@@ -30,7 +30,7 @@ $addDish = function () {
     $validated = $this->validate([
         'name' => ['required', 'string', 'max:255', Rule::unique(Dish::class)->ignore($this->dish->id)],
         'content' => ['string'],
-        'kcal' => ['int'],
+        'kcal' => ['required', 'int', 'min:0'],
         'tags' => [
             'array',
             'min:1',
@@ -47,11 +47,10 @@ $addDish = function () {
     $this->redirect(route('dishes'), navigate: true);
 };
 
-
 $deleteDish = function () {
     $this->dish->delete();
     $this->redirect(route('dishes'), navigate: true);
-}
+};
 
 ?>
 
@@ -74,7 +73,7 @@ $deleteDish = function () {
                             <x-input-label for="name" value="Nazwa" />
 
                             <x-text-input wire:model="name" id="name" class="block mt-1 w-full" name="name"
-                                required />
+                                min="0" required />
 
                             <x-input-error :messages="$errors->get('name')" class="mt-2" />
                         </div>
@@ -82,7 +81,8 @@ $deleteDish = function () {
                         <div>
                             <x-input-label for="kcal" value="Kcal" />
 
-                            <x-text-input wire:model="kcal" id="kcal" class="block mt-1 w-full" name="kcal" type="number"/>
+                            <x-text-input wire:model="kcal" id="kcal" class="block mt-1 w-full" name="kcal"
+                                type="number" />
 
                             <x-input-error :messages="$errors->get('kcal')" class="mt-2" />
                         </div>

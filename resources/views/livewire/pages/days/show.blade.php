@@ -12,7 +12,7 @@ use App\Models\Day;
 
 layout('layouts.app');
 
-state(['day', 'editing']);
+state(['day']);
 
 mount(function (Day $day) {
     if (!$day->user()->is(Auth::user())) {
@@ -22,15 +22,21 @@ mount(function (Day $day) {
     $this->day = $day;
 });
 
-$tags = computed(function () {
-    $dishes = $this->day->dishes()->get();
+$dishes = computed(function () {
+    return $this->day->dishes()->get();
+});
 
+$kcal_sum = computed(function () {
+    return $this->dishes->sum('kcal');
+});
+
+$tags = computed(function () {
     return Auth::user()
         ->tags()
         ->get()
-        ->map(function ($tag) use ($dishes) {
+        ->map(function ($tag) {
             $tag->dish = null;
-            foreach ($dishes as $dish) {
+            foreach ($this->dishes as $dish) {
                 if ($tag->id === $dish->pivot->tag_id) {
                     $tag->dish = $dish;
                     break;
@@ -40,9 +46,11 @@ $tags = computed(function () {
         });
 });
 
-on(['day-dish-updated' => function ($day) {
-    $this->dispatch('$refresh');
-}]);
+on([
+    'day-dish-updated' => function ($day) {
+        unset($this->tags);
+    },
+]);
 
 ?>
 
@@ -57,19 +65,35 @@ on(['day-dish-updated' => function ($day) {
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl space-y-4">
+            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg space-y-4">
+                <div class="max-w-xl divide-y divide-gray-200">
                     @foreach ($this->tags as $tag)
-                        <div class="flex items-center justify-between"
-                            wire:click="$dispatch('openModal', { component: 'edit-day-dish', arguments: { day: {{ $day->id }}, tag: {{ $tag->id }} } })"
-                            wire:key="{{ $tag->id }}">
-                            <x-tag-badge :tag="$tag" />
+                        <div wire:click="$dispatch('openModal', { component: 'edit-day-dish', arguments: { day: {{ $day->id }}, tag: {{ $tag->id }} } })"
+                            wire:key="{{ $tag->id }}" @class(['space-y-2 py-4', 'opacity-50' => !$tag->dish])>
+
+                            <div>
+                                <x-tag-badge :tag="$tag" />
+                            </div>
 
                             @if ($tag->dish)
-                                {{ $tag->dish->name }}
+                                <div class="flex justify-between">
+                                    <span>
+                                        {{ $tag->dish->name }}
+                                    </span>
+                                    <div class="min-w-max">
+                                        {{ $tag->dish->kcal }} kcal
+                                    </div>
+                                </div>
+                            @else
+                                <div class="text-gray-500">
+                                    Brak dania
+                                </div>
                             @endif
                         </div>
                     @endforeach
+                    <div class="flex justify-end py-4 font-semibold">
+                        <span>Suma {{ $this->kcal_sum }} kcal</span>
+                    </div>
                 </div>
             </div>
         </div>

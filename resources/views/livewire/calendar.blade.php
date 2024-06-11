@@ -4,64 +4,118 @@ use App\Models\Day;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 
-use function Livewire\Volt\{mount, state};
+use function Livewire\Volt\{computed, mount, state};
 
 state([
-    "weeks",
-    "daysOfWeek" => ["Pn", "Wt", "Śr", "Cz", "Pt", "Sb", "Nd"]
-]);
+    'daysOfWeek' => ['Pn', 'Wt', 'Śr', 'Cz', 'Pt', 'Sb', 'Nd'],
+])->locked();
 
-mount(function () {
-    $now = Carbon::now();
-    $year = $now->year;
-    $month = $now->month;
-    $startOfMonth = CarbonImmutable::create($year, $month);
+state([
+    'month' => Carbon::now()->month,
+    'year' => Carbon::now()->year,
+])->url();
+
+$weeks = computed(function () {
+    $startOfMonth = CarbonImmutable::create($this->year, $this->month);
     $endOfMonth = $startOfMonth->endOfMonth();
     $startOfWeek = $startOfMonth->startOfWeek(Carbon::MONDAY);
     $endOfWeek = $endOfMonth->endOfWeek(Carbon::SUNDAY);
 
-    $this->weeks =collect($startOfWeek->toPeriod($endOfWeek)->toArray())
-            ->map(fn ($date) => [
+    $days = Auth::user()->days()->whereDate('date', '>=', $startOfWeek)->whereDate('date', '<=', $endOfWeek)->withCount('dishes')->get();
+
+    function getColor($dishes_count)
+    {
+        if ($dishes_count === 5) {
+            return 'bg-green-200 hover:bg-green-500';
+        }
+
+        if ($dishes_count > 0) {
+            return 'bg-blue-200 hover:bg-blue-500';
+        }
+        return 'hover:bg-gray-300 ';
+    }
+
+    return collect($startOfWeek->toPeriod($endOfWeek)->toArray())
+        ->map(function ($date) use ($startOfMonth, $endOfMonth, $days) {
+            $day = $days->where('date', $date)->first();
+            return [
                 'date' => $date->format('Y-m-d'),
                 'day' => $date->day,
                 'withinMonth' => $date->between($startOfMonth, $endOfMonth),
-            ])
-            ->chunk(7);
+                'classes' => getColor($day ? $day->dishes_count : 0),
+            ];
+        })
+        ->chunk(7);
 });
 
-$navigateToDay = function (string $date) {
-    $day = Auth::user()->days()->firstOrCreate(['date' => $date]);
+$monthInstance = computed(function () {
+    return CarbonImmutable::create($this->year, $this->month);
+});
 
-    $this->redirect(route("days.show", $day), navigate: true);
-}
+$navigateToNextMonth = function () {
+    $nextMonth = $this->monthInstance->addMonth();
+
+    $this->month = $nextMonth->month;
+    $this->year = $nextMonth->year;
+    unset($this->monthInstance);
+};
+
+$navigateToPreviousMonth = function () {
+    $previousMonth = $this->monthInstance->subMonth();
+
+    $this->month = $previousMonth->month;
+    $this->year = $previousMonth->year;
+    unset($this->monthInstance);
+};
+
+$navigateToDay = function (string $date) {
+    $day = Auth::user()
+        ->days()
+        ->firstOrCreate(['date' => $date]);
+
+    $this->redirect(route('days.show', $day), navigate: true);
+};
 
 // https://tighten.com/insights/building-a-calendar-with-carbon/
+
 ?>
 
-<div class="bg-white p-4">
-<table class="m-auto text-center">
-    <thead>
-        <tr>
-            @foreach ($daysOfWeek as $day)
-                <td>{{ $day }}</td>
-            @endforeach
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($weeks as $days)
+<div class="bg-white p-4 max-w-min grid gap-4">
+    <div class="flex">
+        <button wire:click="navigateToPreviousMonth">
+            <x-lucide-chevron-left class="w-6 h-6" />
+        </button>
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight grow text-center">
+            {{ ucfirst($this->monthInstance->translatedFormat('F Y')) }}
+        </h2>
+        <button wire:click="navigateToNextMonth">
+            <x-lucide-chevron-right class="w-6 h-6" />
+        </button>
+    </div>
+    <table class="m-auto text-center">
+        <thead>
             <tr>
-                @foreach ($days as $day)
-                    <td>
-                        <button
-                            @class(['bg-gray-200' => !$day['withinMonth'], "p-2 hover:bg-gray-300 block w-full"])
-                            wire:click="navigateToDay('{{ $day['date'] }}')"
-                        >
-                            {{ $day['day'] }}
-                        </button>
-                    </td>
+                @foreach ($daysOfWeek as $day)
+                    <td>{{ $day }}</td>
                 @endforeach
             </tr>
-        @endforeach
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach ($this->weeks as $days)
+                <tr>
+                    @foreach ($days as $day)
+                        <td>
+                            <button @class([
+                                'bg-gray-200' => !$day['withinMonth'],
+                                'p-2 block w-full rounded',
+                                $day['classes'],
+                            ]) wire:click="navigateToDay('{{ $day['date'] }}')">
+                                {{ $day['day'] }}
+                            </button>
+                        </td>
+                    @endforeach
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
 </div>

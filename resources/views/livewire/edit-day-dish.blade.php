@@ -1,17 +1,17 @@
 <div class="max-h-[80vh] overflow-auto">
     @foreach ($this->dishes as $dish)
         <div wire:key="dish-{{ $dish->id }}" @class([
-            'p-4 flex justify-between gap-4',
+            'p-4 flex justify-between items-center gap-4',
             'bg-blue-200' => $dish->is_selected,
         ])>
-            <div wire:click="update({{ $dish->id }})" class="truncate">
+            <button wire:click="update({{ $dish->id }})" class="truncate flex-grow text-left">
                 {{ $dish->name }}
-            </div>
+            </button>
 
-            <div class="flex gap-2 min-w-max">
+            <div class="flex gap-2 min-w-max items-center">
                 {{ $dish->kcal }} kcal
-                <a href="{{ route('dishes.show', $dish) }}">
-                    Edit
+                <a href="{{ route('dishes.show', $dish) }}" class="p-2 bg-blue-100 rounded-sm">
+                    <x-lucide-edit class="w-4 h-4" />
                 </a>
             </div>
         </div>

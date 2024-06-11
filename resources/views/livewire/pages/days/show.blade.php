@@ -68,11 +68,15 @@ on([
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg space-y-4">
                 <div class="max-w-xl divide-y divide-gray-200">
                     @foreach ($this->tags as $tag)
-                        <div wire:click="$dispatch('openModal', { component: 'edit-day-dish', arguments: { day: {{ $day->id }}, tag: {{ $tag->id }} } })"
-                            wire:key="{{ $tag->id }}" @class(['space-y-2 py-4', 'opacity-50' => !$tag->dish])>
+                        <div wire:key="{{ $tag->id }}" @class(['space-y-2 py-4', 'opacity-50' => !$tag->dish])>
 
-                            <div>
+                            <div class="flex justify-between gap-2">
                                 <x-tag-badge :tag="$tag" />
+
+                                <button class="p-2 bg-gray-100 rounded"
+                                    wire:click="$dispatch('openModal', { component: 'edit-day-dish', arguments: { day: {{ $day->id }}, tag: {{ $tag->id }} } })">
+                                    <x-lucide-edit class="w-4 h-4" />
+                                </button>
                             </div>
 
                             @if ($tag->dish)

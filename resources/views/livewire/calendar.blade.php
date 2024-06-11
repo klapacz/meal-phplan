@@ -4,7 +4,7 @@ use App\Models\Day;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 
-use function Livewire\Volt\{computed, mount, state};
+use function Livewire\Volt\{computed, mount, on, state};
 
 state([
     'daysOfWeek' => ['Pn', 'Wt', 'Śr', 'Cz', 'Pt', 'Sb', 'Nd'],
@@ -77,6 +77,13 @@ $navigateToDay = function (string $date) {
 };
 
 // https://tighten.com/insights/building-a-calendar-with-carbon/
+
+on([
+    'day-dish-updated' => function ($day) {
+        unset($this->weeks);
+    },
+]);
+
 
 ?>
 

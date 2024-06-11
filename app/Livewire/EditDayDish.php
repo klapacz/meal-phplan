@@ -46,4 +46,15 @@ class EditDayDish extends ModalComponent
         $this->closeModal();
         $this->dispatch('day-dish-updated', ['day' => $this->day]);
     }
+
+    public function delete()
+    {
+        $this->day
+            ->dishes()
+            ->wherePivot('tag_id', $this->tag->id)
+            ->detach();
+
+        $this->closeModal();
+        $this->dispatch('day-dish-updated', ['day' => $this->day]);
+    }
 }

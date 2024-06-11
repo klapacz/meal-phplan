@@ -16,4 +16,8 @@
             </div>
         </div>
     @endforeach
+
+    <button class="p-4 flex w-full justify-center items-center bg-red-600 text-white" wire:click="delete">
+        Usuń posiłek
+    </button>
 </div>

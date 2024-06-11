@@ -4,6 +4,7 @@ use Laravel\Telescope\Http\Middleware\Authorize;
 use Laravel\Telescope\Watchers;
 
 return [
+    'allowed-user-email' => env('TELESCOPE_ALLOWED_USER_EMAIL', null),
 
     /*
     |--------------------------------------------------------------------------

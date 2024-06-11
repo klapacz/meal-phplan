@@ -7,7 +7,7 @@ use function Livewire\Volt\state;
 
 layout('layouts.app');
 
-$getDishes = fn() => ($this->dishes = Auth::user()->dishes()->get());
+$getDishes = fn() => ($this->dishes = Auth::user()->dishes()->with("tags")->get());
 
 state(['dishes' => $getDishes]);
 ?>

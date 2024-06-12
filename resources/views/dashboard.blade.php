@@ -7,9 +7,9 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg h-96">
                 <div class="flex justify-center">
-                    <livewire:calendar />
+                    <livewire:calendar :lazy="true"/>
                 </div>
             </div>
         </div>

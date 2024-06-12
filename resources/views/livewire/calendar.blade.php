@@ -1,10 +1,9 @@
 <?php
 
-use App\Models\Day;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 
-use function Livewire\Volt\{computed, mount, on, state};
+use function Livewire\Volt\{computed, on, placeholder, state};
 
 state([
     'daysOfWeek' => ['Pn', 'Wt', 'Śr', 'Cz', 'Pt', 'Sb', 'Nd'],
@@ -16,6 +15,7 @@ state([
 ])->url();
 
 $weeks = computed(function () {
+    $start = microtime(true);
     $startOfMonth = CarbonImmutable::create($this->year, $this->month);
     $endOfMonth = $startOfMonth->endOfMonth();
     $startOfWeek = $startOfMonth->startOfWeek(Carbon::MONDAY);
@@ -35,7 +35,7 @@ $weeks = computed(function () {
         return 'hover:bg-gray-300 ';
     }
 
-    return collect($startOfWeek->toPeriod($endOfWeek)->toArray())
+    $result = collect($startOfWeek->toPeriod($endOfWeek)->toArray())
         ->map(function ($date) use ($startOfMonth, $endOfMonth, $days) {
             $day = $days->where('date', $date)->first();
             return [
@@ -46,6 +46,11 @@ $weeks = computed(function () {
             ];
         })
         ->chunk(7);
+
+    $diff = microtime(true) - $start;
+    Log::info("Generating calendar took {$diff} seconds");
+
+    return $result;
 });
 
 $monthInstance = computed(function () {
@@ -84,10 +89,15 @@ on([
     },
 ]);
 
+placeholder('<div class="p-4"><div class="w-56 aspect-square flex justify-center items-center"><x-lucide-loader-circle class="w-12 h-12 animate-spin" /></div></div>');
+
 
 ?>
 
-<div class="bg-white p-4 max-w-min grid gap-4">
+<div class="bg-white p-4 max-w-min grid gap-4 relative">
+    <div wire:loading.flex class="absolute top-0 left-0 w-full h-full bg-white/80 flex justify-center items-center">
+        <x-lucide-loader-circle class="w-12 h-12 animate-spin" />
+    </div>
     <div class="flex">
         <button wire:click="navigateToPreviousMonth">
             <x-lucide-chevron-left class="w-6 h-6" />

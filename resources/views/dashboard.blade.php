@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg h-96">
                 <div class="flex justify-center">
-                    <livewire:calendar :lazy="true"/>
+                    <livewire:calendar />
                 </div>
             </div>
         </div>

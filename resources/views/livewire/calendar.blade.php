@@ -89,14 +89,13 @@ on([
     },
 ]);
 
-placeholder('<div class="p-4"><div class="w-56 aspect-square flex justify-center items-center"><x-lucide-loader-circle class="w-12 h-12 animate-spin" /></div></div>');
-
-
 ?>
 
 <div class="bg-white p-4 max-w-min grid gap-4 relative">
-    <div wire:loading.flex class="absolute top-0 left-0 w-full h-full bg-white/80 flex justify-center items-center">
-        <x-lucide-loader-circle class="w-12 h-12 animate-spin" />
+    <div wire:loading.delay>
+        <div class="absolute top-0 left-0 w-full h-full bg-white/80 flex justify-center items-center">
+            <x-lucide-loader-circle class="w-12 h-12 animate-spin" />
+        </div>
     </div>
     <div class="flex">
         <button wire:click="navigateToPreviousMonth">

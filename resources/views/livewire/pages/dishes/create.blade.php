@@ -88,14 +88,14 @@ $addDish = function () {
                                 <button @click="open = !open" type="button"
                                     class="p-3 rounded-lg flex gap-2 w-full border border-neutral-300 cursor-pointer truncate h-12 bg-white">
                                     @foreach ($allTags as $tag)
-                                        <div x-show="$wire.tags.includes({{ $tag->id }})"
+                                        <div x-show="$wire.tags.includes({{ $tag->id }})" style="display: none;"
                                             @click="$wire.tags = $wire.tags.filter(t => t !== {{ $tag->id }})">
                                             <x-tag-badge :tag="$tag" />
                                         </div>
                                     @endforeach
                                 </button>
                                 <div class="p-3 rounded-lg grid gap-3 w-full shadow-lg x-50 absolute bg-white mt-3 border border-gray-300"
-                                    x-show="open" x-trap="open" @click.outside="open = false"
+                                    style="display: none;" x-show="open" x-trap="open" @click.outside="open = false"
                                     @keydown.escape.window="open = false">
                                     @foreach ($allTags as $tag)
                                         <button x-show="!$wire.tags.includes({{ $tag->id }})"
@@ -105,7 +105,6 @@ $addDish = function () {
                                     @endforeach
                                 </div>
                             </div>
-
 
                             <x-input-error :messages="$errors->get('tags')" class="mt-2" />
                         </div>

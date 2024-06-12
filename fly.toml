@@ -19,16 +19,17 @@ console_command = 'php /var/www/html/artisan tinker'
   LOG_STDERR_FORMATTER = 'Monolog\Formatter\JsonFormatter'
   SESSION_DRIVER = 'cookie'
   SESSION_SECURE_COOKIE = 'true'
-  DB_CONNECTION = 'turso'
   APP_LOCALE = 'pl'
   APP_NAME = 'Jadłospis'
+  DB_CONNECTION='sqlite'
+  DB_DATABASE='/var/www/html/storage/database/app/database.sqlite'
 
 [http_service]
   internal_port = 8080
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true
-  min_machines_running = 0
+  min_machines_running = 1
   processes = ['app']
 
 [[vm]]
@@ -36,9 +37,7 @@ console_command = 'php /var/www/html/artisan tinker'
   cpu_kind = 'shared'
   cpus = 1
 
-[mounts]
-  source = 'whelary_storage'
-  destination = '/var/www/html/storage'
+[[mounts]]
+  source = 'litefs'
+  destination = '/var/www/html/storage/database'
 
-[deploy]
-  release_command = "php /var/www/html/artisan migrate --force"

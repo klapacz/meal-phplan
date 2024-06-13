@@ -16,7 +16,6 @@
         "livewire/livewire": "^3.4",
         "livewire/volt": "^1.0",
         "mallardduck/blade-lucide-icons": "^1.21",
-        "richan-fongdasen/turso-laravel": "^0.7.0",
         "wire-elements/modal": "^2.0"
     },
     "require-dev": {

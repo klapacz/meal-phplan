@@ -11,17 +11,20 @@ class Dish extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'content', 'kcal'];
+    protected $fillable = ['name', 'content', 'kcal', 'type', 'multiplier'];
 
-    public function user(): BelongsTo {
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function tags(): BelongsToMany {
+    public function tags(): BelongsToMany
+    {
         return $this->belongsToMany(Tag::class);
     }
 
-    public function days(): BelongsToMany {
+    public function days(): BelongsToMany
+    {
         return $this->belongsToMany(Day::class);
     }
 }

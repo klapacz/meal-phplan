@@ -27,7 +27,10 @@ $dishes = computed(function () {
 });
 
 $kcal_sum = computed(function () {
-    return $this->dishes->sum('kcal');
+    // reduce sum * multiplier
+    return $this->dishes->reduce(function ($sum, $dish) {
+        return $sum + $dish->kcal * $dish->multiplier;
+    });
 });
 
 $tags = computed(function () {

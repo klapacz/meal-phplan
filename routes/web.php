@@ -1,5 +1,7 @@
 <?php
 
+use App\Livewire\CreateDish;
+use App\Livewire\EditDish;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -12,10 +14,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Volt::route('dishes', 'pages.dishes.index')
         ->name('dishes');
 
-    Volt::route('dishes/create', 'pages.dishes.create')
+    Route::get('dishes/create', CreateDish::class)
         ->name('dishes.create');
 
-    Volt::route('dishes/{dish}', 'pages.dishes.show')
+    Route::get('dishes/{dish}', EditDish::class)
         ->name('dishes.show');
 
     Volt::route('days/{day}', 'pages.days.show')->name('days.show');
@@ -26,4 +28,4 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

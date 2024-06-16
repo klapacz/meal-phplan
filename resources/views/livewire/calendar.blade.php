@@ -15,7 +15,6 @@ state([
 ])->url();
 
 $weeks = computed(function () {
-    $start = microtime(true);
     $startOfMonth = CarbonImmutable::create($this->year, $this->month);
     $endOfMonth = $startOfMonth->endOfMonth();
     $startOfWeek = $startOfMonth->startOfWeek(Carbon::MONDAY);
@@ -23,7 +22,7 @@ $weeks = computed(function () {
 
     $days = Auth::user()->days()->whereDate('date', '>=', $startOfWeek)->whereDate('date', '<=', $endOfWeek)->withCount('dishes')->get();
 
-    function getColor($dishes_count)
+    function getColor($dishes_count): string
     {
         if ($dishes_count === 5) {
             return 'bg-green-200 hover:bg-green-500';
@@ -35,7 +34,7 @@ $weeks = computed(function () {
         return 'hover:bg-gray-300 ';
     }
 
-    $result = collect($startOfWeek->toPeriod($endOfWeek)->toArray())
+    return collect($startOfWeek->toPeriod($endOfWeek)->toArray())
         ->map(function ($date) use ($startOfMonth, $endOfMonth, $days) {
             $day = $days->where('date', $date)->first();
             return [
@@ -46,11 +45,6 @@ $weeks = computed(function () {
             ];
         })
         ->chunk(7);
-
-    $diff = microtime(true) - $start;
-    Log::info("Generating calendar took {$diff} seconds");
-
-    return $result;
 });
 
 $monthInstance = computed(function () {
